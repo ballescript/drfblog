@@ -8,10 +8,14 @@
 {% for comment in comments %}
 <p>{{comment.body}}</p>
 <p>- {{comment.owner}}</p>
+<a href="{% url 'delete_comment' comment.id %}"
+  ><button>Delete comment</button></a
+>
 {% endfor %}
 
-<form action="/comments/" method="POST">
-  {% csrf_token %} {{ form }}
+<form action="{% url 'create_comment' post.id %}" method="POST">
+  {% csrf_token %}
+  <textarea name="comentario"></textarea>
   <input type="submit" value="Submit" />
 </form>
 {% endblock %}

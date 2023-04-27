@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from api.models import Post, Comment
 from rest_framework import permissions
 from api.permissions import IsOwnerOrReadOnly
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from .forms import PostForm, CommentForm
 
@@ -90,16 +90,18 @@ def create_post(request):
 def create_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
     comments = post.comments.all()
+    print(request)
     if request.method == "POST":
-        form = CommentForm(request.POST)
+        # form = CommentForm(request.POST)
+        print(request.POST)
+        comment = Comment()
+        comment.body = request.POST.get("comentario")
+        comment.owner = request.user
+        comment.post = post
+        comment.save()
+        return redirect("post_detail", pk=post.id)
 
-        if form.is_valid():
-            return HttpResponseRedirect(redirect_to="/")
-
-    else:
-        form = CommentForm()
-
-    return render(request, "post_detail.html", {"form": form, "post": post, "comments": comments})
+    return render(request, "post_detail.html", {"post": post, "comments": comments})
 
 
 def post_create_view(request):
@@ -112,3 +114,13 @@ def post_create_view(request):
         print(title, body)
         post_object = Post.objects.create(title=title, body=body)
     return render(request, "create_post.html", context=context)
+
+
+def delete_comment(request, pk):
+    try:
+        comentario = Comment.objects.get(id=pk)
+        postId = comentario.post.id
+        comentario.delete()
+        return redirect("post_detail", pk=postId)
+    except:
+        return redirect("home")
