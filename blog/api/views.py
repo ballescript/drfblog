@@ -6,7 +6,7 @@ from rest_framework import permissions
 from api.permissions import IsOwnerOrReadOnly
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 
 
 class UserList(generics.ListAPIView):
@@ -78,7 +78,7 @@ def create_post(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect(redirect_to="/")
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -87,13 +87,28 @@ def create_post(request):
     return render(request, "create_post.html", {"form": form})
 
 
+def create_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comments.all()
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            return HttpResponseRedirect(redirect_to="/")
+
+    else:
+        form = CommentForm()
+
+    return render(request, "post_detail.html", {"form": form, "post": post, "comments": comments})
+
+
 def post_create_view(request):
     context = {
         "form": PostForm()
     }
     if request.method == "POST":
         title = request.POST.get("title")
-        content = request.POST.get("content")
-        print(title, content)
-        post_object = Post.objects.create(title=title, body=content)
+        body = request.POST.get("body")
+        print(title, body)
+        post_object = Post.objects.create(title=title, body=body)
     return render(request, "create_post.html", context=context)

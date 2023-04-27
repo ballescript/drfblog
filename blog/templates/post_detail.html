@@ -8,4 +8,10 @@
 {% for comment in comments %}
 <p>{{comment.body}}</p>
 <p>- {{comment.owner}}</p>
-{% endfor %} {% endblock %}
+{% endfor %}
+
+<form action="/comments/" method="POST">
+  {% csrf_token %} {{ form }}
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
