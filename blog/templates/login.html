@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="section-title">Login</h1>
+
+<form action="/new-user/" method="post">
+  <label for="email">Your email: </label>
+  <input id="email" type="text" name="email" value="{{ email }}" />
+  <label for="password">Your password: </label>
+  <input id="password" type="password" name="password" value="{{ password }}" />
+  <input type="submit" value="OK" />
+</form>
+{% endblock %}

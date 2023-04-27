@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="section-title">New Post</h1>
+
+{% comment %}
+<form action="/create-post/" method="post">
+  <label for="title">Post title: </label>
+  <input id="title" type="text" name="title" value="{{ title }}" />
+  <label for="body">Post content: </label>
+  <textarea id="body" type="textarea" name="body" value="{{ body }}"></textarea>
+  <input type="submit" value="Submit post" />
+</form>
+{% endcomment %}
+
+<form action="." method="POST">
+  {% csrf_token %} {{ form }}
+  <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}
