@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="section-title">{{ post.title }}</h1>
+<p>{{ post.body }}</p>
+<p>Created on: {{ post.created }}</p>
+<p>{{ post.owner }}</p>
+<h5>Comentarios:</h5>
+{% for comment in comments %}
+<p>{{comment.body}}</p>
+<p>- {{comment.owner}}</p>
+<a href="{% url 'delete_comment' comment.id %}"
+  ><button>Delete comment</button></a
+>
+{% endfor %}
+
+<form action="{% url 'create_comment_with_form' post.id %}" method="POST">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}

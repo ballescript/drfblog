@@ -69,6 +69,19 @@ def login(request):
 # def create_post(request):
 #     return render(request, 'create_post.html')
 
+def create_post_with_form(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            new_post = form.save(commit=False)
+            new_post.owner = request.user
+            new_post.save()
+            return redirect("create_comment_with_form", pk=new_post.id)
+    else:
+        form = PostForm()
+    return render(request, "create_post_with_form.html", {"form": form})
+
+
 def create_post(request):
     if request.method == "POST":
         post = Post()
@@ -77,6 +90,7 @@ def create_post(request):
         post.owner = request.user
         post.save()
         return redirect("post_detail", pk=post.id)
+
         # create a form instance and populate it with data from the request:
         # form = PostForm(request.POST)
         # check whether it's valid:
@@ -92,6 +106,21 @@ def create_post(request):
 
     return render(request, "create_post.html")
 
+
+def create_comment_with_form(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comments.all()
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.owner = request.user
+            new_comment.post = post
+            new_comment.save()
+            return redirect("create_comment_with_form", pk=pk)
+    else:
+        form = CommentForm()
+    return render(request, "post_detail_with_form.html", {"post": post, "comments": comments, "form":form})
 
 def create_comment(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -127,6 +156,6 @@ def delete_comment(request, pk):
         comentario = Comment.objects.get(id=pk)
         postId = comentario.post.id
         comentario.delete()
-        return redirect("post_detail", pk=postId)
+        return redirect("create_comment_with_form", pk=postId)
     except:
         return redirect("home")
