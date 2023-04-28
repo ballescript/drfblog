@@ -14,7 +14,7 @@ urlpatterns = [
     # path('post/<int:pk>/', post_detail, name='post_detail'),
     path('post/<int:pk>/', create_comment, name='post_detail'),
     path('login/', login, name='login'),
-    path('create-post', create_post, name='create-post'),
+    path('create-post', create_post, name='create_post'),
     path('delete-comment/<int:pk>/', delete_comment, name="delete_comment")
 ]
 

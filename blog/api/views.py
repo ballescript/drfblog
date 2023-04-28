@@ -71,20 +71,26 @@ def login(request):
 
 def create_post(request):
     if request.method == "POST":
+        post = Post()
+        post.body = request.POST.get("body")
+        post.title = request.POST.get("title")
+        post.owner = request.user
+        post.save()
+        return redirect("post_detail", pk=post.id)
         # create a form instance and populate it with data from the request:
-        form = PostForm(request.POST)
+        # form = PostForm(request.POST)
         # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect(redirect_to="/")
+        # if form.is_valid():
+        # process the data in form.cleaned_data as required
+        # ...
+        # redirect to a new URL:
+        # return HttpResponseRedirect(redirect_to="/")
 
     # if a GET (or any other method) we'll create a blank form
-    else:
-        form = PostForm()
+    # else:
+    #     form = PostForm()
 
-    return render(request, "create_post.html", {"form": form})
+    return render(request, "create_post.html")
 
 
 def create_comment(request, pk):
